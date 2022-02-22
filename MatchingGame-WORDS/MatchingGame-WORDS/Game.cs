@@ -77,15 +77,6 @@ namespace MatchingGame_WORDS
             SetWordElements();
             SetWordElementsShuffled();
         }
-        internal void PlayGame()
-        {
-            Program.Title();
-            DashedLine();
-            DisplayHeaderGame();
-            DisplayRow("A", WordElements, UserShootA);
-            DisplayRow("B", WordElementsShuffled, UserShootB);
-            DashedLine();
-        }
         internal void DisplayHeaderGame()
         {
 
@@ -98,12 +89,6 @@ namespace MatchingGame_WORDS
                 Console.Write(displayDistance, i);
             }
             Console.WriteLine("");
-        }
-        private void DashedLine()
-        {
-            Console.WriteLine("");
-            string footer = string.Concat(Enumerable.Repeat("------------", NumberOfWords));
-            Console.WriteLine(footer);
         }
         private void DisplayRow(string rowName, List<WordElement> wordElements, string userInput)
         {
@@ -127,7 +112,72 @@ namespace MatchingGame_WORDS
             }
             Console.WriteLine("");
         }
-        internal void GameEnd()
+        private void DashedLine()
+        {
+            Console.WriteLine("");
+            string footer = string.Concat(Enumerable.Repeat("------------", NumberOfWords));
+            Console.WriteLine(footer);
+        }
+        internal void DisplayGame()
+        {
+            Program.Title();
+            DashedLine();
+            DisplayHeaderGame();
+            DisplayRow("A", WordElements, UserShootA);
+            DisplayRow("B", WordElementsShuffled, UserShootB);
+            DashedLine();
+        }
+        private void AddMatchingWordToList()
+        {
+            var matchWordA = WordElements.Find(x => x.Id == Game.UserShootA);
+            var matchWordB = WordElementsShuffled.Find(x => x.Id == Game.UserShootB);
+            if (matchWordA.Value == matchWordB.Value)
+            {
+                MatchedWords.Add(matchWordA);
+            }
+        }
+        internal void ResetUserShoots()
+        {
+            Game.UserShootA = null;
+            Game.UserShootB = null;
+        }
+        private void OneRound()
+        {
+            UserShootA = PartOfRound("A", WordElements);
+            UserShootB = PartOfRound("B", WordElementsShuffled);
+            DisplayGame();
+            Console.WriteLine("Press button to start next round...");
+            Console.ReadLine();
+        }
+        private string PartOfRound(string partRoundName, List<WordElement> wordElements)
+        {
+            DisplayGame();
+            Console.Write($"Input \"{partRoundName}\" and column number e.g {partRoundName}3: ");
+            var userShoot = UserInputAndCheck(wordElements);
+            return userShoot;
+        }
+        private string UserInputAndCheck(List<WordElement> wordElements)
+        {
+            var userInput = Console.ReadLine();
+            while (wordElements.Find(x => x.Id == userInput) == null)
+            {
+                Console.WriteLine("WRONG INPUT");
+                userInput = Console.ReadLine();
+            }
+            return userInput;
+        }
+        internal void StartGame()
+        {
+            while (GuessChances > 0 && MatchedWords.Count <= NumberOfWords)
+            {
+                OneRound();
+                AddMatchingWordToList();
+                ResetUserShoots();
+                GuessChances--;
+            }
+            GameOver();
+        }
+        internal void GameOver()
         {
             if (GuessChances <= 0)
             {
@@ -141,43 +191,6 @@ namespace MatchingGame_WORDS
             Console.WriteLine("PRESS ANY BUTTON TO PLAY AGAIN");
             Console.ReadLine();
             Menu.MainMenu();
-        }
-        internal void ResetUserShoots()
-        {
-            Game.UserShootA = null;
-            Game.UserShootB = null;
-        }
-        private void OneRound()
-        {
-            PlayGame();
-            Console.Write("Input \"A\" and column number e.g A3: ");
-            Game.UserShootA = Console.ReadLine();
-            PlayGame();
-            Console.Write("Input \"B\" and column number e.g B2: ");
-            Game.UserShootB = Console.ReadLine();
-            PlayGame();
-            Console.WriteLine("Press button to start next round...");
-            Console.ReadLine();
-        }
-        internal void StartGame()
-        {
-            while (GuessChances > 0 && MatchedWords.Count <= NumberOfWords)
-            {
-                OneRound();
-                AddMatchingWordToList();
-                ResetUserShoots();
-                GuessChances--;
-            }
-            GameEnd();
-        }
-        private void AddMatchingWordToList()
-        {
-            var matchWordA = WordElements.Find(x => x.Id == Game.UserShootA);
-            var matchWordB = WordElementsShuffled.Find(x => x.Id == Game.UserShootB);
-            if (matchWordA.Value == matchWordB.Value)
-            {
-                MatchedWords.Add(matchWordA);
-            }
         }
     }
 }
