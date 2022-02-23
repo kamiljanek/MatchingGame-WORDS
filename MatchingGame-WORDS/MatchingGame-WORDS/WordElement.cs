@@ -1,8 +1,8 @@
 ﻿namespace MatchingGame_WORDS
 {
-    internal class WordElement
+    public class WordElement
     {
-        internal WordElement(string id, string value)
+        public WordElement(string id, string value)
         {
             HiddenValue = "X";
             Id = id;

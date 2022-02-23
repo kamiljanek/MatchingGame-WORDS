@@ -4,33 +4,27 @@ using System.Linq;
 
 namespace MatchingGame_WORDS
 {
-    internal class Menu
+    public class Menu
     {
-        internal void MainMenu()
+        public void MainMenu()
         {
             var gameData = new GameData();
+            var gameFactory = new GameFactory();
             var txtFileWords = gameData.FileReader("words.txt");
             Title();
             Console.WriteLine("1 - Easy");
             Console.WriteLine("2 - Hard");
             Console.Write("SELECT THE DIFFICULTY LEVEL:");
-            string userInput = Console.ReadLine();
-            switch (userInput)
+            try
             {
-                case "1":
-                    var easyGame = new Game(10, "Easy", 4, txtFileWords);
-                    Game.WinningScore = easyGame.StartGame();
-                    break;
-
-                case "2":
-                    var hardGame = new Game(15, "Hard", 8, txtFileWords);
-                    Game.WinningScore = hardGame.StartGame();
-                    break;
-
-                default:
-                    MainMenu();
-                    break;
+                int userInput = Convert.ToInt32(Console.ReadLine());
+                gameFactory.CreateGameWithDifficultyLvlAsInt(userInput, txtFileWords);
             }
+            catch (Exception)
+            {
+                MainMenu();
+            }
+
 
         }
         internal static void Title()

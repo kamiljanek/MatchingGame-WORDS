@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MatchingGame_WORDS
 {
-    internal class Game
+    public class Game
     {
         private string displayElementsDistance = "{0, -12}";
         public List<WordElement> MatchedWords = new List<WordElement> { new WordElement("empty", "empty") };
@@ -15,7 +15,7 @@ namespace MatchingGame_WORDS
         public static string UserShootA;
         public static string UserShootB;
 
-        internal Game(int guessChances, string lvlName, int numberOfWords, List<string> txtFileWords)
+        public Game(int guessChances, string lvlName, int numberOfWords, List<string> txtFileWords)
         {
             GuessChances = guessChances;
             LvlName = lvlName;
@@ -68,7 +68,7 @@ namespace MatchingGame_WORDS
             SetWordElements();
             SetWordElementsShuffled();
         }
-        internal void DisplayHeaderGame()
+        public void DisplayHeaderGame()
         {
 
             Console.WriteLine($"Level:{LvlName}");
@@ -108,7 +108,7 @@ namespace MatchingGame_WORDS
             string footer = string.Concat(Enumerable.Repeat("------------", NumberOfWords));
             Console.WriteLine(footer);
         }
-        internal void DisplayGame()
+        public void DisplayGame()
         {
             Menu.Title();
             DashedLine();
@@ -126,7 +126,7 @@ namespace MatchingGame_WORDS
                 MatchedWords.Add(matchWordA);
             }
         }
-        internal void ResetUserShoots()
+        public void ResetUserShoots()
         {
             UserShootA = null;
             UserShootB = null;
@@ -156,7 +156,7 @@ namespace MatchingGame_WORDS
             }
             return userInput;
         }
-        internal int StartGame()
+        public int StartGame()
         {
             SetGame();
             TimerStart = DateTime.Now;
@@ -171,7 +171,7 @@ namespace MatchingGame_WORDS
             GameOver();
             return GuessChances;
         }
-        internal void GameOver()
+        public void GameOver()
         {
             if (GuessChances <= 0)
             {
@@ -184,5 +184,69 @@ namespace MatchingGame_WORDS
             Console.WriteLine("PRESS ANY BUTTON TO CONTINUE...");
             Console.ReadLine();
         }
+    }
+    public class HardGame : Game
+    {
+        public HardGame(List<string> txtFileWords) : base(GuessChances, LvlName, NumberOfWords, txtFileWords)
+        {
+
+        }
+        public const int GuessChances = 15;
+        public const string LvlName = "Hard";
+        public const int NumberOfWords = 8;
+
+    }
+    public class EasyGame : Game
+    {
+        public EasyGame(List<string> txtFileWords) : base(GuessChances, LvlName, NumberOfWords, txtFileWords)
+        {
+
+        }
+        public const int GuessChances = 10;
+        public const string LvlName = "Easy";
+        public const int NumberOfWords = 4;
+
+    }
+    public interface IGameFactory
+    {
+        Game CreateGameWithDifficultyLvlAsInt(int userInput, List<string> txtFileWords);
+        Game CreateHardGame(List<string> txtFileWords);
+        Game CreateEasyGame(List<string> txtFileWords);
+    }
+    public class GameFactory : IGameFactory
+    {
+         public Game CreateGameWithDifficultyLvlAsInt(int userInput, List<string> txtFileWords)
+        {
+            Game game;
+            switch (userInput)
+            {
+                case 1:
+                    game = new EasyGame(txtFileWords);
+                    Game.WinningScore = game.StartGame();
+                    break;
+
+                case 2:
+                    game = new HardGame(txtFileWords);
+                    Game.WinningScore = game.StartGame();
+                    break;
+
+                default:
+                    throw new ArgumentException();
+
+            }
+
+            return game;
+        }
+
+         public Game CreateHardGame(List<string> txtFileWords)
+        {
+            return new HardGame(txtFileWords);
+        }
+
+         public Game CreateEasyGame(List<string> txtFileWords)
+        {
+            return new EasyGame(txtFileWords);
+        }
+
     }
 }
