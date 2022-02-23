@@ -1,51 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatchingGame_WORDS
 {
     internal class Game
     {
-        private string displayDistance = "{0, -12}";
-
+        private string displayElementsDistance = "{0, -12}";
+        public List<WordElement> MatchedWords = new List<WordElement> { new WordElement("empty", "empty") };
+        public static DateTime TimerStart;
+        public static DateTime TimerStop;
+        public static int WinningScore;
 
         public static string UserShootA;
         public static string UserShootB;
-        internal Game(int choosenLvl)
-        {
 
-            if (choosenLvl == 1)
-            {
-                GuessChances = 10;
-                LvlName = "Easy";
-                NumberOfWords = 4;
-                MatchedWords = helper;
-            }
-            else if (choosenLvl == 2)
-            {
-                GuessChances = 15;
-                LvlName = "Hard";
-                NumberOfWords = 8;
-                MatchedWords = helper;
-            }
+        internal Game(int guessChances, string lvlName, int numberOfWords, List<string> txtFileWords)
+        {
+            GuessChances = guessChances;
+            LvlName = lvlName;
+            NumberOfWords = numberOfWords;
+            TxtFileWords = txtFileWords;
         }
+
+        public List<string> TxtFileWords { get; private set; }
         public List<string> GameWords { get; private set; }
         public List<string> GameWordsShuffled { get; private set; }
         public List<WordElement> WordElements { get; private set; }
         public List<WordElement> WordElementsShuffled { get; private set; }
-        public List<WordElement> MatchedWords { get; set; }
-        public List<WordElement> helper = new List<WordElement> { new WordElement("a", "a") };
 
         public int GuessChances { get; set; }
         public string LvlName { get; private set; }
         public int NumberOfWords { get; private set; }
 
         private Random random = new Random();
-        private void SetGameWords(List<string> mainWords)
+        private void SetGameWords()
         {
-            var list = mainWords.OrderBy(x => random.Next()).Take(NumberOfWords).ToList();
+            var list = TxtFileWords.OrderBy(x => random.Next()).Take(NumberOfWords).ToList();
             GameWords = list;
         }
         private void SetGameWordsShuffled(List<string> words)
@@ -70,9 +61,9 @@ namespace MatchingGame_WORDS
             }
             WordElementsShuffled = words;
         }
-        internal void SetGame(List<string> mainWords)
+        private void SetGame()
         {
-            SetGameWords(mainWords);
+            SetGameWords();
             SetGameWordsShuffled(GameWords);
             SetWordElements();
             SetWordElementsShuffled();
@@ -81,12 +72,11 @@ namespace MatchingGame_WORDS
         {
 
             Console.WriteLine($"Level:{LvlName}");
-            Console.WriteLine($"Guess chances: {GuessChances}");
-            Console.WriteLine("");
+            Console.WriteLine($"Guess chances: {GuessChances}\n");
             Console.Write("  ");
             for (int i = 1; i <= WordElements.Count; i++)
             {
-                Console.Write(displayDistance, i);
+                Console.Write(displayElementsDistance, i);
             }
             Console.WriteLine("");
         }
@@ -98,16 +88,16 @@ namespace MatchingGame_WORDS
             {
                 if (wordElements[i].Id == userInput)
                 {
-                    Console.Write(displayDistance, wordElements[i].Value);
+                    Console.Write(displayElementsDistance, wordElements[i].Value);
                 }
                 else if (MatchedWords.Find(x => x.Value == wordElements[i].Value) != null)
                 {
 
-                    Console.Write(displayDistance, wordElements[i].Value);
+                    Console.Write(displayElementsDistance, wordElements[i].Value);
                 }
                 else
                 {
-                    Console.Write(displayDistance, wordElements[i].HiddenValue);
+                    Console.Write(displayElementsDistance, wordElements[i].HiddenValue);
                 }
             }
             Console.WriteLine("");
@@ -120,7 +110,7 @@ namespace MatchingGame_WORDS
         }
         internal void DisplayGame()
         {
-            Program.Title();
+            Menu.Title();
             DashedLine();
             DisplayHeaderGame();
             DisplayRow("A", WordElements, UserShootA);
@@ -129,8 +119,8 @@ namespace MatchingGame_WORDS
         }
         private void AddMatchingWordToList()
         {
-            var matchWordA = WordElements.Find(x => x.Id == Game.UserShootA);
-            var matchWordB = WordElementsShuffled.Find(x => x.Id == Game.UserShootB);
+            var matchWordA = WordElements.Find(x => x.Id == UserShootA);
+            var matchWordB = WordElementsShuffled.Find(x => x.Id == UserShootB);
             if (matchWordA.Value == matchWordB.Value)
             {
                 MatchedWords.Add(matchWordA);
@@ -138,15 +128,15 @@ namespace MatchingGame_WORDS
         }
         internal void ResetUserShoots()
         {
-            Game.UserShootA = null;
-            Game.UserShootB = null;
+            UserShootA = null;
+            UserShootB = null;
         }
         private void OneRound()
         {
             UserShootA = PartOfRound("A", WordElements);
             UserShootB = PartOfRound("B", WordElementsShuffled);
             DisplayGame();
-            Console.WriteLine("Press button to start next round...");
+            Console.WriteLine("Press any button to continue...");
             Console.ReadLine();
         }
         private string PartOfRound(string partRoundName, List<WordElement> wordElements)
@@ -166,8 +156,10 @@ namespace MatchingGame_WORDS
             }
             return userInput;
         }
-        internal void StartGame()
+        internal int StartGame()
         {
+            SetGame();
+            TimerStart = DateTime.Now;
             while (GuessChances > 0 && MatchedWords.Count <= NumberOfWords)
             {
                 OneRound();
@@ -175,7 +167,9 @@ namespace MatchingGame_WORDS
                 ResetUserShoots();
                 GuessChances--;
             }
+            TimerStop = DateTime.Now;
             GameOver();
+            return GuessChances;
         }
         internal void GameOver()
         {
@@ -187,10 +181,8 @@ namespace MatchingGame_WORDS
             {
                 Console.WriteLine("YOU WIN...");
             }
-
-            Console.WriteLine("PRESS ANY BUTTON TO PLAY AGAIN");
+            Console.WriteLine("PRESS ANY BUTTON TO CONTINUE...");
             Console.ReadLine();
-            Menu.MainMenu();
         }
     }
 }

@@ -1,46 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MatchingGame_WORDS
 {
     internal class Menu
     {
-
-        internal static void MainMenu()
+        internal void MainMenu()
         {
             var gameData = new GameData();
-            var words = gameData.FileReader();
-            int lvl;
-            Game game;
-            Console.WriteLine("Select the difficulty level:");
-            Console.WriteLine("Easy - 1");
-            Console.WriteLine("Hard - 2");
+            var txtFileWords = gameData.FileReader("words.txt");
+            Title();
+            Console.WriteLine("1 - Easy");
+            Console.WriteLine("2 - Hard");
+            Console.Write("SELECT THE DIFFICULTY LEVEL:");
             string userInput = Console.ReadLine();
             switch (userInput)
             {
                 case "1":
-                    lvl = 1;
-                    game = new Game(lvl);
-                    game.SetGame(words);
-                    game.StartGame();
-                    return;
+                    var easyGame = new Game(10, "Easy", 4, txtFileWords);
+                    Game.WinningScore = easyGame.StartGame();
+                    break;
 
                 case "2":
-                    lvl = 2;
-                    game = new Game(lvl);
-                    game.SetGame(words);
-                    game.StartGame();
-                    return;
+                    var hardGame = new Game(15, "Hard", 8, txtFileWords);
+                    Game.WinningScore = hardGame.StartGame();
+                    break;
 
                 default:
-                    Console.WriteLine("WRONG INPUT... TRY AGAIN...");
                     MainMenu();
                     break;
             }
+
         }
+        internal static void Title()
+        {
+            string headTitle = "MATCHING GAME - WORDS";
+            Console.Clear();
+            Console.SetCursorPosition((Console.WindowWidth - headTitle.Length) / 2, Console.CursorTop); //centering text
+            Console.WriteLine($"{headTitle}\n");
+        }
+        internal void GameOverMenu()
+        {
+            Title();
+            var score = new Score();
+            var gameData = new GameData();
+            Console.WriteLine("1 - PLAY AGAIN");
+            Console.WriteLine("2 - SAVE YOUR SCORE");
+            Console.WriteLine("3 - SHOW 10 BEST SCORES\n");
+            Console.WriteLine("TO CLOSE GAME PRESS \"c\"");
+            Console.Write("\nSELECT OPTION: ");
+
+            string userInput = Console.ReadLine();
+            switch (userInput)
+            {
+                case "1":
+                    MainMenu();
+                    break;
+
+                case "2":
+                    Title();
+                    score.SaveForm();
+                    gameData.SaveScore(score);
+                    break;
+
+                case "3":
+                    Title();
+                    var bestScores = gameData.JsonFileReader("10bestScores.json");
+                    score.ShowBestScores(bestScores);
+                    Console.WriteLine("\nTO CONTINUE PRESS ANY BUTTON...");
+                    Console.ReadLine();
+                    break;
+
+                case "c":
+                    return;
+
+                default:
+                    break;
+            }
+            GameOverMenu();
+        }
+
+
 
 
     }
