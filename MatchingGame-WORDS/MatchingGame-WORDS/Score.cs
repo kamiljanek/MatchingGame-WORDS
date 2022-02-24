@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MatchingGame_WORDS
 {
-    internal class Score
+    public class Score
     {
-        public int ChancesLeft = Game.WinningScore;
+        public int chancesLeft;
 
         public string OwnerName = "empty";
         public string GuessingTime { get; set; }
@@ -20,9 +20,9 @@ namespace MatchingGame_WORDS
         private void ShowCurrentScore()
         {
             SetGuessingTime();
-            Console.WriteLine($"YOUR SCORE: |   Guessing time: {GuessingTime}s | ,   Chances left: {ChancesLeft} | ,   Date: {Date}");
+            Console.WriteLine($"YOUR SCORE: |   Guessing time: {GuessingTime}s | ,   Chances left: {chancesLeft} | ,   Date: {Date}");
         }
-        internal void SaveForm()
+        public void SaveForm()
         {
             ShowCurrentScore();
             Console.Write("\nENTER YOUR NICKNAME: ");
@@ -37,11 +37,11 @@ namespace MatchingGame_WORDS
         public void ShowBestScores(List<Score> bestScores)
         {
             var sortedScores = SortByTime(bestScores);
-            var tenBestScores = sortedScores.GetRange(0,10);
+            var tenBestScores = sortedScores.Take(10).ToList();
             for (int i = 0; i < tenBestScores.Count; i++)
             {
                 Console.WriteLine($"{i+1}. {tenBestScores[i].OwnerName} | " +
-                    $"Guess time: {tenBestScores[i].GuessingTime}s | Chances left: {tenBestScores[i].ChancesLeft} | Date: {tenBestScores[i].Date}");
+                    $"Guess time: {tenBestScores[i].GuessingTime}s | Chances left: {tenBestScores[i].chancesLeft} | Date: {tenBestScores[i].Date}");
             }
         }
         private List<Score> SortByTime(List<Score> bestScores)
@@ -49,5 +49,10 @@ namespace MatchingGame_WORDS
             List<Score> sortedScores = bestScores.OrderBy(o => o.GuessingTime).ToList();
             return sortedScores;
         }
+        public void SetChancesLeft(int chancesLeft)
+        {
+            this.chancesLeft = chancesLeft;
+        }
+
     }
 }

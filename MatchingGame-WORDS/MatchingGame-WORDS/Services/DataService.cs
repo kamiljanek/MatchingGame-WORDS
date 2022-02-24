@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-namespace MatchingGame_WORDS
+
+namespace MatchingGame_WORDS.Services
 {
-    internal class GameData
+    public class DataService
     {
         public string JsonScoreSerialized { get; private set; }
         public List<string> FileReader(string filePath)
@@ -40,11 +41,11 @@ namespace MatchingGame_WORDS
         public void SaveScore(object obj)
         {
             SerializedScore(obj);
-            using (StreamWriter sw = File.AppendText("10bestScores.json"))
+            using (StreamWriter sw = File.AppendText("10BestScores.json"))
             {
                 sw.WriteLine(JsonScoreSerialized);
-            } ;
-         
+            };
+
         }
     }
 }

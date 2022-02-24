@@ -14,7 +14,6 @@ namespace MatchingGame_WORDS
 
         public static string UserShootA;
         public static string UserShootB;
-
         public Game(int guessChances, string lvlName, int numberOfWords, List<string> txtFileWords)
         {
             GuessChances = guessChances;
@@ -110,7 +109,7 @@ namespace MatchingGame_WORDS
         }
         public void DisplayGame()
         {
-            Menu.Title();
+            Messages.ShowTitle();
             DashedLine();
             DisplayHeaderGame();
             DisplayRow("A", WordElements, UserShootA);
@@ -173,6 +172,7 @@ namespace MatchingGame_WORDS
         }
         public void GameOver()
         {
+            WinningScore = GuessChances;
             if (GuessChances <= 0)
             {
                 Console.WriteLine("YOU LOOSE...");
@@ -184,69 +184,5 @@ namespace MatchingGame_WORDS
             Console.WriteLine("PRESS ANY BUTTON TO CONTINUE...");
             Console.ReadLine();
         }
-    }
-    public class HardGame : Game
-    {
-        public HardGame(List<string> txtFileWords) : base(GuessChances, LvlName, NumberOfWords, txtFileWords)
-        {
-
-        }
-        public const int GuessChances = 15;
-        public const string LvlName = "Hard";
-        public const int NumberOfWords = 8;
-
-    }
-    public class EasyGame : Game
-    {
-        public EasyGame(List<string> txtFileWords) : base(GuessChances, LvlName, NumberOfWords, txtFileWords)
-        {
-
-        }
-        public const int GuessChances = 10;
-        public const string LvlName = "Easy";
-        public const int NumberOfWords = 4;
-
-    }
-    public interface IGameFactory
-    {
-        Game CreateGameWithDifficultyLvlAsInt(int userInput, List<string> txtFileWords);
-        Game CreateHardGame(List<string> txtFileWords);
-        Game CreateEasyGame(List<string> txtFileWords);
-    }
-    public class GameFactory : IGameFactory
-    {
-         public Game CreateGameWithDifficultyLvlAsInt(int userInput, List<string> txtFileWords)
-        {
-            Game game;
-            switch (userInput)
-            {
-                case 1:
-                    game = new EasyGame(txtFileWords);
-                    Game.WinningScore = game.StartGame();
-                    break;
-
-                case 2:
-                    game = new HardGame(txtFileWords);
-                    Game.WinningScore = game.StartGame();
-                    break;
-
-                default:
-                    throw new ArgumentException();
-
-            }
-
-            return game;
-        }
-
-         public Game CreateHardGame(List<string> txtFileWords)
-        {
-            return new HardGame(txtFileWords);
-        }
-
-         public Game CreateEasyGame(List<string> txtFileWords)
-        {
-            return new EasyGame(txtFileWords);
-        }
-
     }
 }
