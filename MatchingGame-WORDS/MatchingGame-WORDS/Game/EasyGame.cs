@@ -10,7 +10,7 @@ namespace MatchingGame_WORDS
         }
         public const int GuessChances = 10;
         public const string LvlName = "Easy";
-        public const int NumberOfWords = 1;
+        public const int NumberOfWords = 4;
 
     }
 }
