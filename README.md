@@ -32,8 +32,29 @@ When you finnish the game you can check your score and write it to `10Bestscores
 - check 10 Best Scores 
 
 ## Screenshots
+<p align="center">
+  `
+   Main Menu
+`
+  </p>
+<img src="MatchingGame-WORDS/MatchingGame-WORDS/Screenshots/mainMenu.png">
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
+<p align="center">
+  `
+  Gameplay
+`
+  </p>
+<img src="MatchingGame-WORDS/MatchingGame-WORDS/Screenshots/gameplay.png">
+
+
+<p align="center">
+  `
+  Best Scores
+`
+  </p>
+<img src="MatchingGame-WORDS/MatchingGame-WORDS/Screenshots/bestScores.png">
+
 
 
 ## Author
