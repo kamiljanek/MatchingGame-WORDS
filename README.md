@@ -61,8 +61,5 @@ When you finnish the game you can check your score and write it to `10Bestscores
 
 - [@kamiljanek](https://github.com/kamiljanek)
 
-I always loved brain teasers. Programming is a constant brain teaser. 
-Why don't doing something that you really like and at the same time made your life easier? 
-
 I will be really glad if you will learn something from this project.
 Feel free to read, copy and share the code.
